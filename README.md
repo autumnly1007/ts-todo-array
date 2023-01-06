@@ -1,7 +1,10 @@
 ## 📌 todo-array
 
-REST API 를 이용한 todo list
+TypeScript 와 REST API 를 이용한 todo list 입니다.
 - 배포 주소 : https://todo-array.netlify.app/
+
+기존의 JavaScript 프로젝트를 리팩토링 하였습니다.
+- 저장소 : https://github.com/autumnly1007/todo-array
 
 ## 사용 기술
 - HTML
