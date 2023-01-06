@@ -6,7 +6,7 @@ REST API 를 이용한 todo list
 ## 사용 기술
 - HTML
 - SCSS
-- JavaScript
+- TypeScript
 - Webpack
 
 ## 요구사항
