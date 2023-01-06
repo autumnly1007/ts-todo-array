@@ -7,6 +7,7 @@ import {
   setElementValue,
   getElementValue,
 } from './setElements';
+import './../style/style.scss';
 
 const addInputEl = document.querySelector('.add-input') as HTMLInputElement;
 addInputEl.focus();
@@ -48,22 +49,31 @@ addInputEl.addEventListener('keydown', (event) => {
 
 // 체크된 TODO 삭제 버튼 클릭 이벤트
 const checkedDeleteBtnEl = document.querySelector('.checked-delete-btn') as HTMLButtonElement;
-checkedDeleteBtnEl.addEventListener('click', async (event) => {
+checkedDeleteBtnEl.addEventListener('click', async () => {
   if (!confirm('완료된 할 일을 모두 삭제하시겠어요?')) return;
-  let checkeds = document.querySelectorAll('.todo-done:checked');
-  checkeds = Array.from(checkeds).map((item) => item.parentElement.dataset.id);
+  const checkedsEl = document.querySelectorAll('.todo-done:checked');
+  let checkedIds: string[] = [];
+  if (checkedsEl) {
+    checkedIds = Array.from(checkedsEl).map((item) => {
+      if (item.parentElement && typeof item.parentElement.dataset.id === 'string') {
+        return item.parentElement.dataset.id;
+      } else {
+        return '';
+      }
+    });
+  }
 
-  if (checkeds.length === 0) {
+  if (checkedsEl.length === 0) {
     alert('완료된 할 일이 없습니다.');
     return;
   }
-  checkeds.forEach((item) => {
+  checkedsEl.forEach((item) => {
     const todosEl = document.querySelector('.todos') as HTMLUListElement;
     const todoEl = document.querySelector(`[data-id="${item}"]`) as HTMLLIElement;
     todosEl.removeChild(todoEl);
   });
   showElement('.loading');
-  await deleteListTodo(checkeds);
+  await deleteListTodo(checkedIds);
   await fnReorderTodo();
   renderTodoList();
   hideElement('.loading');

@@ -1,6 +1,11 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
+export interface dataType {
+  id: string;
+  title: string;
+  done: boolean;
+  order: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 const apiUrl = process.env.API_URL as string;
 
@@ -10,13 +15,13 @@ const HEADER = {
   username: process.env.USER_NAME,
 };
 
-function createRequest(type: string, data) {
-  const request = { method: type, headers: HEADER };
+function createRequest(type: string, data?: object): RequestInit {
+  const request = { method: type, headers: HEADER } as RequestInit;
   if (data) request.body = JSON.stringify(data);
   return request;
 }
 
-export async function getListTodo() {
+export async function getListTodo(): Promise<dataType[]> {
   const res = await fetch(apiUrl, createRequest('GET'));
   return await res.json();
 }
@@ -25,8 +30,8 @@ export async function insertTodo(title: string, order: number) {
   await fetch(apiUrl, createRequest('POST', { title, order }));
 }
 
-export async function updateTodo({ id, title, done, order }) {
-  const res = await fetch(apiUrl + `/${id}`, createRequest('PUT', { title, done, order }));
+export async function updateTodo({ id, title, done, order }: dataType) {
+  await fetch(apiUrl + `/${id}`, createRequest('PUT', { title, done, order }));
 }
 
 export async function deleteTodo(id: string) {
@@ -39,6 +44,6 @@ export async function deleteListTodo(ids: string[]) {
   }
 }
 
-export async function reorderTodo(todoIds) {
+export async function reorderTodo(todoIds: string[]) {
   await fetch(apiUrl + `/reorder`, createRequest('PUT', { todoIds }));
 }

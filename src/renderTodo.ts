@@ -1,18 +1,9 @@
-import { deleteTodo, reorderTodo, getListTodo, updateTodo } from './requests';
+import { deleteTodo, reorderTodo, getListTodo, updateTodo, dataType } from './requests';
 import { formatDate, hideElement, setElementHtml, showElement, showToast } from './setElements';
 import Sortable from 'sortablejs';
 
 export let curOrder = 0;
 let sortFlag = true;
-
-interface dataType {
-  createdAt: string;
-  updatedAt: string;
-  id: string;
-  order: string;
-  done: boolean;
-  title: string;
-}
 
 const renderTodo = (data: dataType) => {
   const todoItemEl = document.createElement('div');
@@ -38,10 +29,14 @@ const renderTodo = (data: dataType) => {
   dateEl.className = 'date';
   const insertDateEl = document.createElement('span');
   insertDateEl.className = 'insert-date';
-  insertDateEl.innerHTML = `Add : ${formatDate(data.createdAt)}`;
+  if (data.createdAt) {
+    insertDateEl.innerHTML = `Add : ${formatDate(data.createdAt)}`;
+  }
   const updateDateEl = document.createElement('span');
   updateDateEl.className = 'update-date';
-  updateDateEl.innerHTML = `Update : ${formatDate(data.updatedAt)}`;
+  if (data.updatedAt) {
+    updateDateEl.innerHTML = `Update : ${formatDate(data.updatedAt)}`;
+  }
   dateEl.append(insertDateEl, updateDateEl);
 
   const deleteBtnEl = document.createElement('button');
@@ -56,7 +51,7 @@ const renderTodo = (data: dataType) => {
     const id = data.id;
     const title = inputEl.value;
     const done = checkboxEl.checked;
-    const order = todoItemEl.dataset.order;
+    const order = todoItemEl.dataset.order as string;
     fnUpdateTodo({ id, title, done, order });
   });
 
@@ -65,14 +60,16 @@ const renderTodo = (data: dataType) => {
     const id = data.id;
     const title = inputEl.value;
     const done = checkboxEl.checked;
-    const order = todoItemEl.dataset.order;
+    const order = todoItemEl.dataset.order as string;
     fnUpdateTodo({ id, title, done, order });
   });
 
   // TODO 삭제 이벤트
   deleteBtnEl.addEventListener('click', (event) => {
     const todosEl = document.querySelector('.todos') as HTMLElement;
-    todosEl.removeChild(event.target.closest('.todo-item'));
+    const target = event.target as HTMLElement;
+    const parentEl = target.closest('.todo-item') as HTMLElement;
+    todosEl.removeChild(parentEl);
     fnDeleteTodo(data.id);
   });
 
@@ -82,11 +79,11 @@ const renderTodo = (data: dataType) => {
 };
 
 // TODO 목록 렌더링
-export async function renderTodoList(done: string, order: string) {
-  let res = Array.from(await getListTodo()).reverse();
+export async function renderTodoList(done?: string, order?: string) {
+  let res = Array.from(await getListTodo()).reverse() as dataType[];
 
-  if (order === 'recent') res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  else if (order === 'old') res.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  if (order === 'recent') res.sort((a, b) => +new Date(b.createdAt!) - +new Date(a.createdAt!));
+  else if (order === 'old') res.sort((a, b) => +new Date(a.createdAt!) - +new Date(b.createdAt!));
 
   if (done === 'true') res = res.filter((item) => item.done === true);
   else if (done === 'false') res = res.filter((item) => item.done === false);
@@ -99,7 +96,7 @@ export async function renderTodoList(done: string, order: string) {
 }
 
 // TODO 수정
-async function fnUpdateTodo(obj) {
+async function fnUpdateTodo(obj: dataType) {
   showElement('.loading');
   try {
     await updateTodo(obj);
@@ -163,6 +160,9 @@ const sortable = Sortable.create(todosEl, {
 // 순서 재정렬
 export async function fnReorderTodo() {
   const ids: string[] = [];
-  document.querySelectorAll('.todo-item').forEach((item) => ids.unshift(item.dataset.id));
+  const todoItems = document.querySelectorAll('.todo-item') as NodeListOf<HTMLElement>;
+  todoItems.forEach((item) => {
+    if (item.dataset.id) ids.unshift(item.dataset.id);
+  });
   await reorderTodo(ids);
 }

@@ -1,22 +1,22 @@
 {
-  "name": "todo-array",
+  "name": "ts-todo-array",
   "version": "1.0.0",
-  "description": "REST API 를 이용한 todo list",
+  "description": "TypeScript 와 REST API 를 이용한 todo list",
   "scripts": {
     "dev": "webpack-dev-server --mode development",
     "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/autumnly1007/todo-array.git"
+    "url": "git+https://github.com/autumnly1007/ts-todo-array.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/autumnly1007/todo-array/issues"
+    "url": "https://github.com/autumnly1007/ts-todo-array/issues"
   },
-  "homepage": "https://github.com/autumnly1007/todo-array#readme",
+  "homepage": "https://github.com/autumnly1007/ts-todo-array#readme",
   "devDependencies": {
     "@babel/core": "^7.20.2",
     "@babel/plugin-transform-runtime": "^7.19.6",
