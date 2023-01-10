@@ -62,12 +62,11 @@ checkedDeleteBtnEl.addEventListener('click', async () => {
       }
     });
   }
-
   if (checkedsEl.length === 0) {
     alert('완료된 할 일이 없습니다.');
     return;
   }
-  checkedsEl.forEach((item) => {
+  checkedIds.forEach((item) => {
     const todosEl = document.querySelector('.todos') as HTMLUListElement;
     const todoEl = document.querySelector(`[data-id="${item}"]`) as HTMLLIElement;
     todosEl.removeChild(todoEl);
